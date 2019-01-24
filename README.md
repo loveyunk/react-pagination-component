@@ -2,12 +2,12 @@
 
 > React Pagination Component.
 
-[![NPM](https://img.shields.io/npm/v/react-pagination-component.svg)](https://www.npmjs.com/package/react-pagination-component) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
+[![NPM](https://img.shields.io/npm/v/react-pagination-component.svg)](https://www.npmjs.com/package/@loveyunk/react-pagination-component) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
 ## Install
 
 ```bash
-npm install --save react-pagination-component
+npm install --save @loveyunk/react-pagination-component
 ```
 
 ## Usage
