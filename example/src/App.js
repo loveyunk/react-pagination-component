@@ -1,12 +1,21 @@
-import React, { Component } from 'react'
+import React, {Component} from 'react'
 
-import ExampleComponent from 'react-pagination-component'
+import Pagination from 'react-pagination-component'
 
 export default class App extends Component {
-  render () {
+
+  render() {
+
+    const paginationProps = {
+      total: 88,
+      onChange: (page) => {
+        // console.log(page)
+      }
+    }
+
     return (
       <div>
-        <ExampleComponent text='Modern React component module' />
+        <Pagination {...paginationProps}/>
       </div>
     )
   }
