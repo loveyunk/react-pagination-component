@@ -1,4 +1,5 @@
 import * as React from 'react'
+import * as PropTypes from 'prop-types'
 import Pager from './Pager'
 import styles from './styles.less'
 
@@ -20,6 +21,15 @@ function noop() {}
 
 class Pagination extends React.Component < PaginationProps,
 PaginationState > {
+
+  static propTypes = {
+    total: PropTypes.number,
+    current: PropTypes.number,
+    pageSize: PropTypes.number,
+    onChange: PropTypes.func,
+    prefixCls: PropTypes.string,
+    className: PropTypes.string
+  }
 
   static defaultProps : Partial < PaginationProps > = {
     total: 0,
