@@ -97,7 +97,12 @@ PaginationState > {
 
     if (allPage <= 9) {
       for (let i = 0; i <= allPage; i++) {
-        pagerList.push(<Pager key={i} page={i} onClick={this.handleChange} rootPrefixCls={prefixCls}/>)
+        pagerList.push(<Pager
+          key={i}
+          page={i}
+          onClick={this.handleChange}
+          rootPrefixCls={prefixCls}
+          active={this.state.current === i}/>)
       }
     } else {}
 
