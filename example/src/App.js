@@ -8,6 +8,7 @@ export default class App extends Component {
 
     const paginationProps = {
       total: 88,
+      current: 1,
       onChange: (page) => {
         // console.log(page)
       }
