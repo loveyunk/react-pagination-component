@@ -1,15 +1,14 @@
 import * as React from 'react'
 import Pager from './Pager'
+import styles from './styles.less'
 
 export interface PaginationProps {
-  total?: number;
-  pageSize?: number;
-  defaultPageSize?: number;
-  current?: number;
-  defaultCurrent?: number;
-  onChange?: (page : number) => void;
-  prefixCls?: string;
-  className?: string;
+  total : number;
+  pageSize : number;
+  current : number;
+  onChange : (page : number) => void;
+  prefixCls : string;
+  className : string;
 }
 
 export interface PaginationState {
@@ -24,8 +23,8 @@ PaginationState > {
 
   static defaultProps : Partial < PaginationProps > = {
     total: 0,
-    defaultPageSize: 10,
-    defaultCurrent: 1,
+    pageSize: 10,
+    current: 1,
     onChange: noop,
     prefixCls: 'lv-pagination',
     className: ''
@@ -34,19 +33,9 @@ PaginationState > {
   constructor(props : PaginationProps) {
     super(props)
 
-    let pageSize = props.defaultPageSize
-    if ('pageSize' in props) {
-      pageSize = props.pageSize
-    }
-
-    let current = props.defaultCurrent
-    if ('current' in props) {
-      current = props.current
-    }
-
     this.state = {
-      current: current !,
-      pageSize: pageSize !
+      current: props.current,
+      pageSize: props.pageSize
     }
   }
 
@@ -55,13 +44,15 @@ PaginationState > {
   }
 
   private calcPage = () : number => {
-    return Math.floor((this.props.total ! - 1) / this.state.pageSize) + 1
+    return Math.floor((this.props.total - 1) / this.state.pageSize) + 1
   }
 
   private handleChange = (page : number) => {
     if (this.isValid(page)) {
       this.setState({current: page})
-      this.props.onChange !(page)
+      this
+        .props
+        .onChange(page)
     }
   }
 
@@ -96,18 +87,26 @@ PaginationState > {
 
     if (allPage <= 9) {
       for (let i = 0; i <= allPage; i++) {
-        pagerList.push(<Pager key={i} page={i} onClick={this.handleChange}/>)
+        pagerList.push(<Pager key={i} page={i} onClick={this.handleChange} rootPrefixCls={prefixCls}/>)
       }
     } else {}
 
     return (
-      <ul className={`${prefixCls} ${props.className}`}>
-        <li onClick={this.prev}>
-          <a>&lt;</a>
+      <ul className={`${styles[prefixCls]} ${props.className}`}>
+        <li
+          onClick={this.prev}
+          className={(this.hasPrev()
+          ? ''
+          : styles[`${prefixCls}-disabled`]) + ' ' + styles[`${prefixCls}-prev`]}>
+          <a></a>
         </li>
         {pagerList}
-        <li onClick={this.next}>
-          <a>&gt;</a>
+        <li
+          onClick={this.next}
+          className={(this.hasPrev()
+          ? ''
+          : styles[`${prefixCls}-disabled`]) + ' ' + styles[`${prefixCls}-next`]}>
+          <a></a>
         </li>
       </ul>
     )
