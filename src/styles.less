@@ -22,6 +22,33 @@
     border: 1px solid #d9d9d9;
     background: #fff;
     margin-right: 8px;
+
+    a {
+      text-decoration: none;
+      color: #666;
+    }
+
+    &:hover {
+      border-color: #2db7f5;
+      a {
+        color: #2db7f5;
+      }
+    }
+
+    &-active {
+      background-color: #2db7f5;
+      border-color: #2db7f5;
+
+      a {
+        color: #fff;
+      }
+
+      &:hover {
+        a {
+          color: #fff;
+        }
+      }
+    }
   }
 
   &-disabled {
