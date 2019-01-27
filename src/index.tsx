@@ -1,6 +1,7 @@
 import * as React from 'react'
 import * as PropTypes from 'prop-types'
 import Pager from './Pager'
+import Options from './Options'
 import styles from './styles.less'
 
 export interface PaginationProps {
@@ -10,6 +11,7 @@ export interface PaginationProps {
   onChange : (page : number) => void;
   prefixCls : string;
   className : string;
+  showQuickJumper : boolean;
 }
 
 export interface PaginationState {
@@ -28,7 +30,8 @@ PaginationState > {
     pageSize: PropTypes.number,
     onChange: PropTypes.func,
     prefixCls: PropTypes.string,
-    className: PropTypes.string
+    className: PropTypes.string,
+    showQuickJumper: PropTypes.bool
   }
 
   static defaultProps : Partial < PaginationProps > = {
@@ -37,7 +40,8 @@ PaginationState > {
     current: 1,
     onChange: noop,
     prefixCls: 'lv-pagination',
-    className: ''
+    className: '',
+    showQuickJumper: false
   }
 
   constructor(props : PaginationProps) {
@@ -49,15 +53,15 @@ PaginationState > {
     }
   }
 
-  private isValid = (page : number) : boolean => {
+  isValid = (page : number) : boolean => {
     return typeof page === 'number' && page >= 1 && page !== this.state.current
   }
 
-  private calcPage = () : number => {
+  calcPage = () : number => {
     return Math.floor((this.props.total - 1) / this.state.pageSize) + 1
   }
 
-  private handleChange = (page : number) => {
+  handleChange = (page : number) => {
     if (this.isValid(page)) {
       this.setState({current: page})
       this
@@ -66,23 +70,32 @@ PaginationState > {
     }
   }
 
-  private prev = () => {
+  prev = () => {
     if (this.hasPrev()) {
       this.handleChange(this.state.current - 1)
     }
   }
 
-  private next = () => {
+  next = () => {
     if (this.hasNext()) {
       this.handleChange(this.state.current + 1)
     }
   }
 
-  private hasPrev = () => {
+  // 1 6 11 16
+  jumpPrev = () => {
+    this.handleChange(Math.max(1, this.state.current - 5))
+  }
+
+  jumpNext = () => {
+    this.handleChange(Math.min(this.calcPage(), this.state.current + 5))
+  }
+
+  hasPrev = () => {
     return this.state.current > 1
   }
 
-  private hasNext = () => {
+  hasNext = () => {
     return this.state.current < this.calcPage()
   }
 
@@ -93,10 +106,15 @@ PaginationState > {
     const prefixCls = props.prefixCls
 
     const pagerList = []
-    const allPage : number = this.calcPage()
+    const allPages = this.calcPage()
 
-    if (allPage <= 9) {
-      for (let i = 0; i <= allPage; i++) {
+    let jumpPrev = null
+    let jumpNext = null
+    let firstPager = null
+    let lastPager = null
+
+    if (allPages <= 9) {
+      for (let i = 1; i <= allPages; i++) {
         pagerList.push(<Pager
           key={i}
           page={i}
@@ -104,7 +122,75 @@ PaginationState > {
           rootPrefixCls={prefixCls}
           active={this.state.current === i}/>)
       }
-    } else {}
+    } else {
+      jumpPrev = (
+        <li
+          key="prev"
+          onClick={this.jumpPrev}
+          className={styles[`${prefixCls}-jump-prev`]}>
+          <a></a>
+        </li>
+      )
+
+      jumpNext = (
+        <li
+          key="next"
+          onClick={this.jumpNext}
+          className={styles[`${prefixCls}-jump-next`]}>
+          <a></a>
+        </li>
+      )
+
+      firstPager = (<Pager
+        rootPrefixCls={prefixCls}
+        page={1}
+        onClick={this.handleChange}
+        key={1}
+        active={false}/>)
+
+      lastPager = (<Pager
+        rootPrefixCls={prefixCls}
+        page={allPages}
+        onClick={this.handleChange}
+        key={allPages}
+        active={false}/>)
+
+      const current = this.state.current;
+
+      let left = Math.max(1, current - 2);
+      let right = Math.min(current + 2, allPages);
+
+      if (current - 1 <= 2) {
+        right = 1 + 4;
+      }
+
+      if (allPages - current <= 2) {
+        left = allPages - 4;
+      }
+
+      for (let i = left; i <= right; i++) {
+        pagerList.push(<Pager
+          rootPrefixCls={prefixCls}
+          key={i}
+          page={i}
+          onClick={this.handleChange}
+          active={current === i}/>)
+      }
+
+      if (current - 1 >= 4) {
+        pagerList.unshift(jumpPrev);
+      }
+      if (allPages - current >= 4) {
+        pagerList.push(jumpNext);
+      }
+
+      if (left !== 1) {
+        pagerList.unshift(firstPager);
+      }
+      if (right !== allPages) {
+        pagerList.push(lastPager);
+      }
+    }
 
     return (
       <ul className={`${styles[prefixCls]} ${props.className}`}>
@@ -123,6 +209,12 @@ PaginationState > {
           : styles[`${prefixCls}-disabled`]) + ' ' + styles[`${prefixCls}-next`]}>
           <a></a>
         </li>
+        <Options
+          quickGo={this.props.showQuickJumper
+          ? this.handleChange
+          : noop}
+          current={this.state.current}
+          rootPrefixCls={prefixCls}/>
       </ul>
     )
   }
