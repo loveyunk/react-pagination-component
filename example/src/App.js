@@ -7,11 +7,12 @@ export default class App extends Component {
   render() {
 
     const paginationProps = {
-      total: 88,
-      current: 1,
+      total: 120,
+      current: 10,
       onChange: (page) => {
-        // console.log(page)
-      }
+        console.log(page)
+      },
+      showQuickJumper: true
     }
 
     return (
