@@ -2,6 +2,7 @@ import * as React from 'react'
 import * as PropTypes from 'prop-types'
 import Pager from './Pager'
 import Options from './Options'
+import LOCALE from './locale/zh_CN'
 import styles from './styles.less'
 
 export interface PaginationProps {
@@ -12,6 +13,9 @@ export interface PaginationProps {
   prefixCls : string;
   className : string;
   showQuickJumper : boolean;
+  locale : typeof LOCALE;
+  showSizeChanger : boolean;
+  onShowSizeChange : (current : number, size : number) => void;
 }
 
 export interface PaginationState {
@@ -31,7 +35,10 @@ PaginationState > {
     onChange: PropTypes.func,
     prefixCls: PropTypes.string,
     className: PropTypes.string,
-    showQuickJumper: PropTypes.bool
+    showQuickJumper: PropTypes.bool,
+    locale: PropTypes.object,
+    showSizeChanger: PropTypes.bool,
+    onShowSizeChange: PropTypes.func
   }
 
   static defaultProps : Partial < PaginationProps > = {
@@ -41,7 +48,10 @@ PaginationState > {
     onChange: noop,
     prefixCls: 'lv-pagination',
     className: '',
-    showQuickJumper: false
+    showQuickJumper: false,
+    locale: LOCALE,
+    showSizeChanger: false,
+    onShowSizeChange: noop
   }
 
   constructor(props : PaginationProps) {
@@ -61,8 +71,14 @@ PaginationState > {
     return Math.floor((this.props.total - 1) / this.state.pageSize) + 1
   }
 
+  changePageSize = () => {}
+
   handleChange = (page : number) => {
     if (this.isValid(page)) {
+      const allPages = this.calcPage()
+      if (page > allPages) {
+        page = allPages
+      }
       this.setState({current: page})
       this
         .props
@@ -212,7 +228,11 @@ PaginationState > {
         <Options
           quickGo={this.props.showQuickJumper
           ? this.handleChange
-          : noop}
+          : null}
+          changeSize={this.props.showSizeChanger
+          ? this.changePageSize
+          : null}
+          locale={this.props.locale}
           current={this.state.current}
           rootPrefixCls={prefixCls}/>
       </ul>
