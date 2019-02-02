@@ -12,7 +12,8 @@ export default class App extends Component {
       onChange: (page) => {
         console.log(page)
       },
-      showQuickJumper: true
+      showQuickJumper: true,
+      showSizeChanger: true
     }
 
     return (
