@@ -1,33 +1,31 @@
-import * as React from 'react'
-import * as PropTypes from 'prop-types'
-import Pager from './Pager'
-import Options from './Options'
-import LOCALE from './locale/zh_CN'
-import styles from './styles.less'
+import * as React from 'react';
+import * as PropTypes from 'prop-types';
+import Pager from './Pager';
+import Options from './Options';
+import LOCALE from './locale/zh_CN';
+import styles from './styles.less';
 
 export interface PaginationProps {
-  total : number;
-  pageSize : number;
-  current : number;
-  onChange : (page : number) => void;
-  prefixCls : string;
-  className : string;
-  showQuickJumper : boolean;
-  locale : typeof LOCALE;
-  showSizeChanger : boolean;
-  onShowSizeChange : (current : number, size : number) => void;
+  total: number;
+  pageSize: number;
+  current: number;
+  onChange: (page: number) => void;
+  prefixCls: string;
+  className: string;
+  showQuickJumper: boolean;
+  locale: typeof LOCALE;
+  showSizeChanger: boolean;
+  onShowSizeChange: (current: number, size: number) => void;
 }
 
 export interface PaginationState {
-  current : number;
-  pageSize : number;
+  current: number;
+  pageSize: number;
 }
 
 function noop() {}
 
-class Pagination extends React.Component < PaginationProps,
-PaginationState > {
-
+class Pagination extends React.Component<PaginationProps, PaginationState> {
   static propTypes = {
     total: PropTypes.number,
     current: PropTypes.number,
@@ -39,9 +37,9 @@ PaginationState > {
     locale: PropTypes.object,
     showSizeChanger: PropTypes.bool,
     onShowSizeChange: PropTypes.func
-  }
+  };
 
-  static defaultProps : Partial < PaginationProps > = {
+  static defaultProps: Partial<PaginationProps> = {
     total: 0,
     pageSize: 10,
     current: 1,
@@ -52,124 +50,132 @@ PaginationState > {
     locale: LOCALE,
     showSizeChanger: false,
     onShowSizeChange: noop
-  }
+  };
 
-  constructor(props : PaginationProps) {
-    super(props)
+  constructor(props: PaginationProps) {
+    super(props);
 
     this.state = {
       current: props.current,
       pageSize: props.pageSize
-    }
+    };
   }
 
-  isValid = (page : number) : boolean => {
-    return typeof page === 'number' && page >= 1 && page !== this.state.current
-  }
+  isValid = (page: number): boolean => {
+    return typeof page === 'number' && page >= 1 && page !== this.state.current;
+  };
 
-  calcPage = () : number => {
-    return Math.floor((this.props.total - 1) / this.state.pageSize) + 1
-  }
+  calcPage = (): number => {
+    return Math.floor((this.props.total - 1) / this.state.pageSize) + 1;
+  };
 
-  changePageSize = () => {}
+  changePageSize = () => {};
 
-  handleChange = (page : number) => {
+  handleChange = (page: number) => {
     if (this.isValid(page)) {
-      const allPages = this.calcPage()
+      const allPages = this.calcPage();
       if (page > allPages) {
-        page = allPages
+        page = allPages;
       }
-      this.setState({current: page})
-      this
-        .props
-        .onChange(page)
+      this.setState({ current: page });
+      this.props.onChange(page);
     }
-  }
+  };
 
   prev = () => {
     if (this.hasPrev()) {
-      this.handleChange(this.state.current - 1)
+      this.handleChange(this.state.current - 1);
     }
-  }
+  };
 
   next = () => {
     if (this.hasNext()) {
-      this.handleChange(this.state.current + 1)
+      this.handleChange(this.state.current + 1);
     }
-  }
+  };
 
   // 1 6 11 16
   jumpPrev = () => {
-    this.handleChange(Math.max(1, this.state.current - 5))
-  }
+    this.handleChange(Math.max(1, this.state.current - 5));
+  };
 
   jumpNext = () => {
-    this.handleChange(Math.min(this.calcPage(), this.state.current + 5))
-  }
+    this.handleChange(Math.min(this.calcPage(), this.state.current + 5));
+  };
 
   hasPrev = () => {
-    return this.state.current > 1
-  }
+    return this.state.current > 1;
+  };
 
   hasNext = () => {
-    return this.state.current < this.calcPage()
-  }
+    return this.state.current < this.calcPage();
+  };
 
   render() {
+    const props = this.props;
 
-    const props = this.props
+    const prefixCls = props.prefixCls;
 
-    const prefixCls = props.prefixCls
+    const pagerList = [];
+    const allPages = this.calcPage();
 
-    const pagerList = []
-    const allPages = this.calcPage()
-
-    let jumpPrev = null
-    let jumpNext = null
-    let firstPager = null
-    let lastPager = null
+    let jumpPrev = null;
+    let jumpNext = null;
+    let firstPager = null;
+    let lastPager = null;
 
     if (allPages <= 9) {
       for (let i = 1; i <= allPages; i++) {
-        pagerList.push(<Pager
-          key={i}
-          page={i}
-          onClick={this.handleChange}
-          rootPrefixCls={prefixCls}
-          active={this.state.current === i}/>)
+        pagerList.push(
+          <Pager
+            key={i}
+            page={i}
+            onClick={this.handleChange}
+            rootPrefixCls={prefixCls}
+            active={this.state.current === i}
+          />
+        );
       }
     } else {
       jumpPrev = (
         <li
-          key="prev"
+          key='prev'
           onClick={this.jumpPrev}
-          className={styles[`${prefixCls}-jump-prev`]}>
-          <a></a>
+          className={styles[`${prefixCls}-jump-prev`]}
+        >
+          <a />
         </li>
-      )
+      );
 
       jumpNext = (
         <li
-          key="next"
+          key='next'
           onClick={this.jumpNext}
-          className={styles[`${prefixCls}-jump-next`]}>
-          <a></a>
+          className={styles[`${prefixCls}-jump-next`]}
+        >
+          <a />
         </li>
-      )
+      );
 
-      firstPager = (<Pager
-        rootPrefixCls={prefixCls}
-        page={1}
-        onClick={this.handleChange}
-        key={1}
-        active={false}/>)
+      firstPager = (
+        <Pager
+          rootPrefixCls={prefixCls}
+          page={1}
+          onClick={this.handleChange}
+          key={1}
+          active={false}
+        />
+      );
 
-      lastPager = (<Pager
-        rootPrefixCls={prefixCls}
-        page={allPages}
-        onClick={this.handleChange}
-        key={allPages}
-        active={false}/>)
+      lastPager = (
+        <Pager
+          rootPrefixCls={prefixCls}
+          page={allPages}
+          onClick={this.handleChange}
+          key={allPages}
+          active={false}
+        />
+      );
 
       const current = this.state.current;
 
@@ -185,12 +191,15 @@ PaginationState > {
       }
 
       for (let i = left; i <= right; i++) {
-        pagerList.push(<Pager
-          rootPrefixCls={prefixCls}
-          key={i}
-          page={i}
-          onClick={this.handleChange}
-          active={current === i}/>)
+        pagerList.push(
+          <Pager
+            rootPrefixCls={prefixCls}
+            key={i}
+            page={i}
+            onClick={this.handleChange}
+            active={current === i}
+          />
+        );
       }
 
       if (current - 1 >= 4) {
@@ -212,32 +221,35 @@ PaginationState > {
       <ul className={`${styles[prefixCls]} ${props.className}`}>
         <li
           onClick={this.prev}
-          className={(this.hasPrev()
-          ? ''
-          : styles[`${prefixCls}-disabled`]) + ' ' + styles[`${prefixCls}-prev`]}>
-          <a></a>
+          className={
+            (this.hasPrev() ? '' : styles[`${prefixCls}-disabled`]) +
+            ' ' +
+            styles[`${prefixCls}-prev`]
+          }
+        >
+          <a />
         </li>
         {pagerList}
         <li
           onClick={this.next}
-          className={(this.hasPrev()
-          ? ''
-          : styles[`${prefixCls}-disabled`]) + ' ' + styles[`${prefixCls}-next`]}>
-          <a></a>
+          className={
+            (this.hasPrev() ? '' : styles[`${prefixCls}-disabled`]) +
+            ' ' +
+            styles[`${prefixCls}-next`]
+          }
+        >
+          <a />
         </li>
         <Options
-          quickGo={this.props.showQuickJumper
-          ? this.handleChange
-          : null}
-          changeSize={this.props.showSizeChanger
-          ? this.changePageSize
-          : null}
+          quickGo={this.props.showQuickJumper ? this.handleChange : null}
+          changeSize={this.props.showSizeChanger ? this.changePageSize : null}
           locale={this.props.locale}
           current={this.state.current}
-          rootPrefixCls={prefixCls}/>
+          rootPrefixCls={prefixCls}
+        />
       </ul>
-    )
+    );
   }
 }
 
-export default Pagination
+export default Pagination;
